@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Updated color palette with #28282B as base */
+    --background: 240 3% 16%;
+    --foreground: 42 30% 96%;
+    --card: 240 3% 14%;
+    --card-foreground: 42 30% 96%;
+    --popover: 240 3% 12%;
+    --popover-foreground: 42 30% 96%;
+    --primary: 45 92% 58%;
+    --primary-foreground: 240 3% 16%;
+    --secondary: 35 25% 25%;
+    --secondary-foreground: 42 30% 96%;
+    --muted: 240 3% 22%;
+    --muted-foreground: 42 15% 65%;
+    --accent: 85 22% 35%;
+    --accent-foreground: 42 30% 96%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3% 22%;
+    --input: 240 3% 20%;
+    --ring: 45 92% 58%;
+    --radius: 1rem;
+    
+    /* Custom earth colors - refined */
+    --earth-green: 85 22% 35%;
+    --earth-yellow: 45 92% 58%;
+    --earth-brown: 30 30% 20%;
+    --earth-cream: 42 35% 94%;
+    --earth-sage: 85 18% 40%;
+    --sunflower-gold: 48 95% 55%;
+    --sunflower-dark: 42 70% 45%;
+    --sky-warm: 35 45% 72%;
+    
+    /* Sidebar colors */
+    --sidebar-background: 240 3% 12%;
+    --sidebar-foreground: 42 30% 96%;
+    --sidebar-primary: 45 92% 58%;
+    --sidebar-primary-foreground: 240 3% 16%;
+    --sidebar-accent: 240 3% 18%;
+    --sidebar-accent-foreground: 42 30% 96%;
+    --sidebar-border: 240 3% 20%;
+    --sidebar-ring: 45 92% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#28282B] text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: "ss01", "ss02", "cv01";
+    letter-spacing: -0.01em;
+  }
+  
+  /* Sleek headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Refined Glassmorphism utilities */
+  .glass {
+    @apply backdrop-blur-2xl bg-white/[0.03] border border-white/[0.08];
+  }
+  
+  .glass-strong {
+    @apply backdrop-blur-3xl bg-white/[0.06] border border-white/[0.12];
+  }
+  
+  .glass-dark {
+    @apply backdrop-blur-2xl bg-black/25 border border-white/[0.05];
+  }
+  
+  /* Enhanced glassmorphism for sidebar */
+  .glass-sidebar {
+    @apply backdrop-blur-3xl;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  
+  /* Refined Earth-toned gradients */
+  .gradient-earth {
+    background: linear-gradient(180deg, 
+      hsl(38 45% 78%) 0%, 
+      hsl(42 55% 72%) 20%, 
+      hsl(40 50% 58%) 50%, 
+      hsl(35 42% 42%) 75%, 
+      hsl(85 22% 25%) 100%
+    );
+  }
+  
+  .gradient-sunset {
+    background: linear-gradient(180deg,
+      hsl(28 65% 72%) 0%,
+      hsl(38 75% 65%) 35%,
+      hsl(45 70% 55%) 70%,
+      hsl(42 60% 40%) 100%
+    );
+  }
+  
+  /* Sunflower sway animation - more natural */
+  @keyframes sway {
+    0%, 100% {
+      transform: rotate(-2deg);
+    }
+    25% {
+      transform: rotate(1.5deg);
+    }
+    50% {
+      transform: rotate(2.5deg);
+    }
+    75% {
+      transform: rotate(-1deg);
+    }
+  }
+  
+  @keyframes sway-gentle {
+    0%, 100% {
+      transform: rotate(-1deg) translateX(-1px);
+    }
+    50% {
+      transform: rotate(1deg) translateX(1px);
+    }
+  }
+  
+  @keyframes sway-strong {
+    0%, 100% {
+      transform: rotate(-4deg) translateX(-3px);
+    }
+    50% {
+      transform: rotate(4deg) translateX(3px);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 24px hsl(45 92% 58% / 0.25);
+    }
+    50% {
+      box-shadow: 0 0 48px hsl(45 92% 58% / 0.4);
+    }
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  @keyframes sunflower-glow {
+    0%, 100% {
+      filter: brightness(1) drop-shadow(0 0 8px hsl(45 92% 58% / 0.3));
+    }
+    50% {
+      filter: brightness(1.1) drop-shadow(0 0 16px hsl(45 92% 58% / 0.5));
+    }
+  }
+  
+  /* Sidebar slide animation */
+  @keyframes sidebar-slide-in {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes sidebar-slide-out {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+  
+  .animate-sway {
+    animation: sway 5s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  
+  .animate-sway-gentle {
+    animation: sway-gentle 6s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  
+  .animate-sway-strong {
+    animation: sway-strong 4s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s infinite;
+  }
+  
+  .animate-sunflower-glow {
+    animation: sunflower-glow 4s ease-in-out infinite;
+  }
+  
+  /* Custom scrollbar - refined */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.25);
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 30px hsl(45 92% 58% / 0.4);
+  }
+  
+  .text-shadow-soft {
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+  
+  .font-sleek {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
