@@ -77,7 +77,7 @@ function AppContent() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#28282B] flex items-center justify-center">
+      <div className="h-screen overflow-hidden bg-[#28282B] flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -107,7 +107,7 @@ function AppContent() {
 
   // Show normal app with navbar
   return (
-    <div className="min-h-screen bg-[#28282B] text-foreground">
+    <div className="h-screen overflow-hidden bg-[#28282B] text-foreground">
       {/* Navbar - always visible when authenticated */}
       <Navbar currentPage={currentPage} onPageChange={handlePageChange} />
 
@@ -120,11 +120,7 @@ function AppContent() {
           animate="animate"
           exit="exit"
           transition={pageTransition}
-          className={
-            currentPage === 'chat' || currentPage === 'forYou'
-              ? 'h-screen pt-20'
-              : ''
-          }
+          className={`${currentPage === 'chat' || currentPage === 'forYou' ? 'pt-20 ' : ''}h-full overflow-hidden`}
         >
           {renderPage()}
         </motion.div>

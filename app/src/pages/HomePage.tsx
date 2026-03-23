@@ -15,12 +15,12 @@ const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
   const { t } = useLanguage();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#28282B]">
+    <div className="relative h-screen overflow-hidden bg-[#28282B]">
       {/* Sunflower field background */}
       <SunflowerField />
 
       {/* Content overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 h-full flex flex-col">
         {/* Spacer for navbar */}
         <div className="h-24" />
 

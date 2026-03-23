@@ -58,7 +58,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#28282B] flex items-center justify-center px-4">
+    <div className="h-screen overflow-hidden bg-[#28282B] flex items-center justify-center px-4">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 right-20 w-64 h-64 bg-[#f4d03f]/5 rounded-full blur-3xl" />
@@ -72,7 +72,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange }) => {
         className="relative w-full max-w-md"
       >
         {/* Logo */}
-        <motion.div 
+        <motion.div
           className="text-center mb-8"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}

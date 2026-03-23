@@ -155,13 +155,13 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
             <SunflowerField />
 
             {/* Overlay content */}
-            <div className="relative z-10 flex flex-col h-full pt-24 px-4 md:px-8">
+            <div className="relative z-10 flex flex-col h-full pt-24 px-4 md:px-8 pb-6">
                 {/* Header and farmer profile strip */}
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="max-w-4xl mx-auto w-full mb-4"
+                    className="max-w-4xl mx-auto w-full mb-4 shrink-0 h-[260px] overflow-y-auto"
                 >
                     <div className="flex items-center justify-between gap-4 mb-3">
                         <div className="flex items-center gap-3">
@@ -221,8 +221,8 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                 </motion.div>
 
                 {/* Chat area */}
-                <div className="flex-1 flex flex-col">
-                    <div className="flex-1 overflow-y-auto pb-4">
+                <div className="flex-1 min-h-0 flex flex-col">
+                    <div className="flex-1 min-h-0 overflow-y-auto pb-4">
                         <div className="max-w-3xl mx-auto w-full px-2 space-y-2">
                             <AnimatePresence initial={false}>
                                 {messages.map(message => (
@@ -234,7 +234,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                     </div>
 
                     {/* Input bar */}
-                    <div className="mt-auto">
+                    <div className="shrink-0">
                         <ChatInput onSend={handleSend} isLoading={isLoading} />
                     </div>
                 </div>
