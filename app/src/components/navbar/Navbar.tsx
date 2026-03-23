@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Home, MessageCircle, User } from 'lucide-react';
+import { Home, MessageCircle, Sparkles, Stars, User } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import type { Page } from '@/types';
 
@@ -13,18 +13,20 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
 
   const navItems: { id: Page; label: string; icon: React.ElementType }[] = [
     { id: 'home', label: t('home'), icon: Home },
-    { id: 'chat', label: t('chat'), icon: MessageCircle },
+    { id: 'chat', label: t('varunAI'), icon: MessageCircle },
+    { id: 'forYou', label: t('forYou'), icon: Sparkles },
+    { id: 'sitara', label: t('sitaraAI'), icon: Stars },
     { id: 'account', label: t('account'), icon: User },
   ];
 
   return (
     <motion.nav
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-5 left-1/2 -translate-x-1/2 z-50"
+      className="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none"
     >
-      <div className="glass-strong rounded-full px-2 py-2 flex items-center gap-1">
+      <div className="glass-strong rounded-full px-2 py-2 flex items-center gap-1 pointer-events-auto">
         {navItems.map((item, index) => {
           const isActive = currentPage === item.id;
           const Icon = item.icon;
@@ -36,8 +38,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
               className={`
                 relative px-5 py-2.5 rounded-full flex items-center gap-2 
                 transition-all duration-300 ease-out
-                ${isActive 
-                  ? 'text-[#28282B]' 
+                ${isActive
+                  ? 'text-[#28282B]'
                   : 'text-white/60 hover:text-white'
                 }
               `}

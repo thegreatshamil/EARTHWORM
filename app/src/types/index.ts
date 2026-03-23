@@ -22,6 +22,13 @@ export interface WeatherData {
   location: string;
 }
 
+export interface FarmerProfile {
+  name: string;
+  location: string;
+  fieldSize: string;
+  crops: string;
+}
+
 export type Language = 'en' | 'hi' | 'ta' | 'te' | 'kn' | 'ml' | 'bn' | 'mr' | 'gu' | 'pa';
 
 export interface ChatRequest {
@@ -38,10 +45,22 @@ export interface ChatResponse {
   timestamp: string;
 }
 
+export interface ForYouRequest {
+  message: string;
+  profile: FarmerProfile;
+  language: Language;
+  image_base64?: string;
+  audio_file?: string;
+}
+
+export interface ForYouResponse {
+  response: string;
+}
+
 export interface NavItem {
   label: string;
   path: string;
   icon: string;
 }
 
-export type Page = 'home' | 'chat' | 'account' | 'login' | 'register';
+export type Page = 'home' | 'chat' | 'forYou' | 'sitara' | 'account' | 'login' | 'register';

@@ -66,9 +66,9 @@ const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
               flex items-center gap-3
             "
           >
-            <span>{t('chat')}</span>
+            <span>{t('varunAI')}</span>
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            
+
             {/* Shimmer effect */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
               <div className="absolute inset-0 animate-shimmer opacity-20" />

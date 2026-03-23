@@ -8,6 +8,8 @@ import ChatPage from '@/pages/ChatPage';
 import AccountPage from '@/pages/AccountPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
+import ForYouPage from '@/pages/ForYouPage';
+import SitaraPage from '@/pages/SitaraPage';
 import type { Page } from '@/types';
 import './App.css';
 
@@ -29,7 +31,7 @@ function AppContent() {
 
   // Redirect to login if not authenticated and trying to access protected pages
   const handlePageChange = (page: Page) => {
-    const protectedPages: Page[] = ['home', 'chat', 'account'];
+    const protectedPages: Page[] = ['home', 'chat', 'forYou', 'sitara', 'account'];
     if (protectedPages.includes(page) && !isAuthenticated) {
       setCurrentPage('login');
     } else {
@@ -55,6 +57,10 @@ function AppContent() {
         return <HomePage onPageChange={handlePageChange} />;
       case 'chat':
         return <ChatPage onPageChange={handlePageChange} />;
+      case 'forYou':
+        return <ForYouPage onPageChange={handlePageChange} />;
+      case 'sitara':
+        return <SitaraPage onPageChange={handlePageChange} />;
       case 'account':
         return <AccountPage onPageChange={handlePageChange} />;
       case 'login':
@@ -114,7 +120,11 @@ function AppContent() {
           animate="animate"
           exit="exit"
           transition={pageTransition}
-          className={currentPage === 'chat' ? 'h-screen pt-20' : ''}
+          className={
+            currentPage === 'chat' || currentPage === 'forYou'
+              ? 'h-screen pt-20'
+              : ''
+          }
         >
           {renderPage()}
         </motion.div>
