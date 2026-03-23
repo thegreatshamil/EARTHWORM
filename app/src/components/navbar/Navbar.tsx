@@ -26,7 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none"
     >
-      <div className="glass-strong rounded-full px-2 py-2 flex items-center gap-1 pointer-events-auto">
+      <div className="rounded-full px-2 py-2 flex items-center gap-1 pointer-events-auto backdrop-blur-2xl bg-white/[0.14] border border-white/20 shadow-[0_8px_24px_rgba(122,90,26,0.15)]">
         {navItems.map((item, index) => {
           const isActive = currentPage === item.id;
           const Icon = item.icon;

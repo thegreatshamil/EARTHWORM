@@ -119,11 +119,11 @@
   /* Refined Earth-toned gradients */
   .gradient-earth {
     background: linear-gradient(180deg,
-        #c8a84b 0%,
-        #b48d32 28%,
-        #a07820 58%,
-        #825f17 80%,
-        #6b4f10 100%);
+        #d4a843 0%,
+        #c99831 24%,
+        #b8861f 56%,
+        #946b1e 80%,
+        #7a5a1a 100%);
   }
 
   .gradient-sunset {

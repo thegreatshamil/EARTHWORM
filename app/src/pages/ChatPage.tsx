@@ -169,16 +169,16 @@ const ChatPage: React.FC<ChatPageProps> = ({ onPageChange: _onPageChange }) => {
     }, [sessions]);
 
     return (
-        <div className="relative min-h-full">
-            <div className="relative z-10 pt-20 px-4 md:px-8 pb-3">
-                <div className="mx-auto max-w-6xl">
-                    <div className="flex items-stretch gap-4">
+        <div className="relative h-full overflow-hidden">
+            <div className="relative z-10 h-full pt-24 px-4 md:px-8 pb-4">
+                <div className="mx-auto max-w-6xl h-full">
+                    <div className="flex h-full items-stretch gap-4">
                         {/* Sidebar (push layout) */}
                         <div
                             style={{ width: showHistory ? 280 : 0, transition: 'width 250ms ease' }}
-                            className="shrink-0 overflow-hidden"
+                            className="h-full shrink-0 overflow-hidden"
                         >
-                            <div className="relative w-[280px] glass-sidebar rounded-3xl border border-white/10 flex flex-col overflow-hidden">
+                            <div className="relative w-[280px] h-full glass-sidebar rounded-3xl border border-white/10 flex flex-col overflow-hidden">
                                 {/* Glass shine effect */}
                                 <div className="absolute inset-0 pointer-events-none">
                                     <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/[0.05] to-transparent" />
@@ -295,10 +295,10 @@ const ChatPage: React.FC<ChatPageProps> = ({ onPageChange: _onPageChange }) => {
                         </div>
 
                         {/* Main chat area */}
-                        <GlassPanel className="relative flex-1 min-w-0 rounded-[32px] bg-white/[0.08] border border-white/15 shadow-2xl shadow-[#6b4f10]/25">
-                            <div className="flex flex-col min-h-[calc(100vh-6rem)]">
+                        <GlassPanel className="relative h-full flex-1 min-w-0 rounded-[32px] bg-white/[0.08] border border-white/15 shadow-2xl shadow-[#6b4f10]/25">
+                            <div className="flex h-full min-h-0 flex-col">
                                 {/* Toggle button always visible */}
-                                <div className="sticky top-0 z-10 px-4 pt-2">
+                                <div className="z-10 px-4 pt-3 shrink-0">
                                     <motion.button
                                         onClick={() => setShowHistory((prev) => !prev)}
                                         whileHover={{ scale: 1.05 }}
@@ -311,9 +311,20 @@ const ChatPage: React.FC<ChatPageProps> = ({ onPageChange: _onPageChange }) => {
                                 </div>
 
                                 {/* Messages: natural stacking in the scroll container */}
-                                <div className="flex-1 px-3 sm:px-6 pt-2 pb-2">
+                                <div className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-6 pt-2 pb-2">
                                     <AnimatePresence mode="popLayout">
-                                        {isNewChat ? null : (
+                                        {isNewChat ? (
+                                            <div className="h-full min-h-[320px] flex items-center justify-center">
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 8 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="w-full max-w-sm mx-auto rounded-3xl bg-white/[0.18] backdrop-blur-xl px-6 py-5 text-center shadow-[0_12px_28px_rgba(122,90,26,0.16)]"
+                                                >
+                                                    <Sprout className="w-8 h-8 text-[#f4d03f] mx-auto mb-2" />
+                                                    <p className="text-sm text-white/90 leading-relaxed">{t('askAnything')}</p>
+                                                </motion.div>
+                                            </div>
+                                        ) : (
                                             <div className="space-y-2">
                                                 {currentSession.messages.map((message) => (
                                                     <ChatMessage key={message.id} message={message} />
@@ -357,7 +368,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ onPageChange: _onPageChange }) => {
                                 </div>
 
                                 {/* Input pinned to bottom of viewport */}
-                                <div className="sticky bottom-0 mt-auto px-2 sm:px-6 pb-6 pt-4 border-t border-white/15 bg-white/[0.08] backdrop-blur-xl">
+                                <div className="mt-auto px-2 sm:px-6 pb-6 pt-4 border-t border-white/15 bg-white/[0.08] backdrop-blur-xl shrink-0">
                                     <ChatInput onSend={handleSend} isLoading={isLoading} />
                                 </div>
                             </div>
