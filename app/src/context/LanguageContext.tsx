@@ -738,6 +738,9 @@ export const translations: Translations = {
     gu: 'ડેટા અને ગોપનીયતા',
     pa: 'ਡੇਟਾ ਅਤੇ ਪ੍ਰਾਈਵੇਸੀ',
   },
+  clearChatHistory: {
+    en: 'Clear Chat History',
+  },
   deleteConversations: {
     en: 'Delete all conversations',
     hi: 'सभी बातचीत हटाएं',

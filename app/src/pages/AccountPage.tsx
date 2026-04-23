@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Moon, Globe, Trash2, LogOut, Sprout } from 'lucide-react';
+import { User, Globe, Trash2, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageToggle from '@/components/language/LanguageToggle';
@@ -13,6 +14,22 @@ interface AccountPageProps {
 const AccountPage: React.FC<AccountPageProps> = ({ onPageChange }) => {
   const { logout } = useAuth();
   const { t } = useLanguage();
+  const defaultName = t('farmerUser') || 'Farmer User';
+  const [displayName, setDisplayName] = useState(defaultName);
+  const [nameDraft, setNameDraft] = useState(defaultName);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [hasCustomName, setHasCustomName] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!hasCustomName) {
+      setDisplayName(defaultName);
+      if (!isEditingName) {
+        setNameDraft(defaultName);
+      }
+    }
+  }, [defaultName, hasCustomName, isEditingName]);
 
   const handleClearHistory = () => {
     if (confirm(t('clearChatConfirm') || 'Are you sure you want to clear all chat history?')) {
@@ -26,6 +43,44 @@ const AccountPage: React.FC<AccountPageProps> = ({ onPageChange }) => {
     onPageChange('login');
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProfileImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const startNameEdit = () => {
+    setNameDraft(displayName);
+    setIsEditingName(true);
+  };
+
+  const commitNameEdit = () => {
+    const trimmed = nameDraft.trim();
+    if (trimmed.length > 0) {
+      setDisplayName(trimmed);
+      setHasCustomName(true);
+    } else if (!hasCustomName) {
+      setDisplayName(defaultName);
+    }
+    setIsEditingName(false);
+  };
+
+  const cancelNameEdit = () => {
+    setNameDraft(displayName);
+    setIsEditingName(false);
+  };
+
   const settingsGroups = [
     {
       title: t('preferences') || 'Preferences',
@@ -35,26 +90,6 @@ const AccountPage: React.FC<AccountPageProps> = ({ onPageChange }) => {
           label: t('language') || 'Language',
           description: t('changeLanguage') || 'Change app language',
           action: <LanguageToggle />,
-        },
-        {
-          icon: Moon,
-          label: t('darkMode') || 'Dark Mode',
-          description: t('toggleTheme') || 'Toggle dark theme',
-          action: (
-            <div className="w-11 h-6 bg-[#f4d03f]/20 rounded-full relative cursor-pointer">
-              <div className="absolute right-1 top-1 w-4 h-4 bg-[#f4d03f] rounded-full" />
-            </div>
-          ),
-        },
-        {
-          icon: Bell,
-          label: t('notifications') || 'Notifications',
-          description: t('manageAlerts') || 'Manage alerts',
-          action: (
-            <div className="w-11 h-6 bg-white/10 rounded-full relative cursor-pointer">
-              <div className="absolute left-1 top-1 w-4 h-4 bg-white/40 rounded-full" />
-            </div>
-          ),
         },
       ],
     },
@@ -74,16 +109,6 @@ const AccountPage: React.FC<AccountPageProps> = ({ onPageChange }) => {
             </button>
           ),
         },
-        {
-          icon: Shield,
-          label: t('privacySettings') || 'Privacy Settings',
-          description: t('manageData') || 'Manage your data',
-          action: (
-            <button className="p-2 hover:bg-white/10 rounded-xl text-white/50 transition-colors">
-              <Sprout className="w-4 h-4" />
-            </button>
-          ),
-        },
       ],
     },
   ];
@@ -98,10 +123,50 @@ const AccountPage: React.FC<AccountPageProps> = ({ onPageChange }) => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#f4d03f] to-[#d4ac0d] flex items-center justify-center shadow-lg shadow-[#f4d03f]/20">
-              <User className="w-12 h-12 text-[#28282B]" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1">{t('farmerUser') || 'Farmer User'}</h1>
+            <button
+              type="button"
+              onClick={handleAvatarClick}
+              className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#f4d03f] to-[#d4ac0d] flex items-center justify-center shadow-lg shadow-[#f4d03f]/20 overflow-hidden"
+            >
+              {profileImage ? (
+                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-12 h-12 text-[#28282B]" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="user"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            {isEditingName ? (
+              <input
+                value={nameDraft}
+                onChange={(event) => setNameDraft(event.target.value)}
+                onBlur={commitNameEdit}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    commitNameEdit();
+                  }
+                  if (event.key === 'Escape') {
+                    cancelNameEdit();
+                  }
+                }}
+                className="text-2xl font-bold text-white mb-1 bg-transparent border-b border-white/30 focus:border-[#f4d03f] outline-none text-center w-full"
+                autoFocus
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={startNameEdit}
+                className="text-2xl font-bold text-white mb-1"
+              >
+                {displayName}
+              </button>
+            )}
             <p className="text-white/50">farmer@earthworm.ai</p>
           </motion.div>
 
