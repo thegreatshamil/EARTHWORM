@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
                 transition-all duration-300 ease-out
                 ${isActive
                   ? 'text-[#28282B]'
-                  : 'text-white/60 hover:text-white'
+                  : 'text-white/90 hover:text-white'
                 }
               `}
               whileHover={{ scale: 1.02 }}
@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
               {isActive && (
                 <motion.div
                   layoutId="activeNavPill"
-                  className="absolute inset-0 bg-[#f4d03f] rounded-full"
+                  className="absolute inset-0 bg-[#f4d03f] rounded-full shadow-[0_0_18px_rgba(244,208,63,0.55)]"
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}

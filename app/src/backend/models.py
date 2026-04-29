@@ -6,6 +6,27 @@ from typing import Optional, Literal
 from datetime import datetime
 
 
+class FieldProfile(BaseModel):
+    """Field profile model for personalized agricultural advice."""
+    name: str = Field(..., description="Field name")
+    location: str = Field(..., description="Field location")
+    size_acres: float = Field(..., description="Field size in acres")
+    crops: list[str] = Field(default_factory=list, description="Crops of interest")
+    soil_type: Optional[str] = Field(default=None, description="Soil type")
+    irrigation: Optional[str] = Field(default=None, description="Irrigation type")
+
+
+class ForYouRequest(BaseModel):
+    """For You request model with field context."""
+    text: str = Field(..., description="Farmer's question")
+    session_id: str = Field(..., description="Unique session identifier")
+    language: Literal["en", "hi", "ta", "te", "kn", "ml", "bn", "mr", "gu", "pa"] = Field(
+        default="en",
+        description="Language code for the assistant response",
+    )
+    field_profile: FieldProfile = Field(..., description="Selected field profile")
+
+
 class ChatRequest(BaseModel):
     """Chat request model."""
     text: Optional[str] = Field(

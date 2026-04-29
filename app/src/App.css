@@ -43,8 +43,8 @@ audio {
   .glass,
   .glass-strong,
   .glass-dark {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 }
 

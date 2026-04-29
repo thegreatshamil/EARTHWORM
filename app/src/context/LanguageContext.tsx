@@ -113,6 +113,18 @@ export const translations: Translations = {
     gu: 'વરુણ AI',
     pa: 'ਵਰੁਣ AI',
   },
+  letsChat: {
+    en: "Let's Chat",
+    hi: 'चलो बात करें',
+    ta: 'உரையாடுவோம்',
+    te: 'మాట్లాడదాం',
+    kn: 'ಮಾತಾಡೋಣ',
+    ml: 'നമുക്ക് സംസാരിക്കാം',
+    bn: 'চলো কথা বলি',
+    mr: 'चला बोलूया',
+    gu: 'ચાલો વાત કરીએ',
+    pa: 'ਆਓ ਗੱਲ ਕਰੀਏ',
+  },
   forYou: {
     en: 'For You',
     hi: 'आपके लिए',

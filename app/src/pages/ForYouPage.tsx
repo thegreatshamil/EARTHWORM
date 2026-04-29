@@ -39,6 +39,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
     const { t, language } = useLanguage();
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [fieldSetupPrompt, setFieldSetupPrompt] = useState('');
 
     const [tab, setTab] = useState<'chat' | 'fields'>('chat');
     const [profileExpanded, setProfileExpanded] = useState(false);
@@ -101,6 +102,12 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
 
     const activeProfile = activeField?.profile ?? createEmptyProfile();
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const forYouSessionIdRef = useRef(
+        typeof crypto !== 'undefined' && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `for_you_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    );
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -179,6 +186,20 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
         async (text: string, imageBase64?: string, audioFile?: string) => {
             if (!text.trim() && !imageBase64 && !audioFile) return;
 
+            const hasRequiredProfile = Boolean(
+                activeField &&
+                activeProfile.location.trim() &&
+                activeProfile.fieldSize.trim() &&
+                activeProfile.crops.trim()
+            );
+
+            if (!hasRequiredProfile) {
+                setFieldSetupPrompt('Please set up your field profile (location, size, and crops) before asking questions.');
+                return;
+            }
+
+            setFieldSetupPrompt('');
+
             const userMessage: Message = {
                 id: Date.now().toString(),
                 role: 'user',
@@ -192,12 +213,23 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
             setIsLoading(true);
 
             try {
+                const sizeMatch = activeProfile.fieldSize.match(/[\d.]+/);
+                const sizeAcres = sizeMatch ? Number.parseFloat(sizeMatch[0]) : 0;
+                const crops = activeProfile.crops
+                    .split(',')
+                    .map(c => c.trim())
+                    .filter(Boolean);
+
                 const responseText = await forYouService.sendInsight({
-                    message: text,
-                    profile: activeProfile,
+                    text,
+                    session_id: forYouSessionIdRef.current,
                     language,
-                    image_base64: imageBase64,
-                    audio_file: audioFile,
+                    field_profile: {
+                        name: activeField?.label?.trim() || activeProfile.name.trim() || 'Field',
+                        location: activeProfile.location.trim(),
+                        size_acres: Number.isFinite(sizeAcres) ? sizeAcres : 0,
+                        crops,
+                    },
                 });
 
                 const assistantMessage: Message = {
@@ -276,16 +308,16 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                 </div>
                                 <div>
                                     <h1 className="text-lg md:text-xl font-semibold text-white tracking-tight">{t('forYou')}</h1>
-                                    <p className="text-xs md:text-sm text-white/60">{t('forYouSubtitle')}</p>
+                                    <p className="text-xs md:text-sm text-white/85">{t('forYouSubtitle')}</p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <div className="text-right">
-                                    <div className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+                                    <div className="text-[11px] uppercase tracking-[0.2em] text-white/80">
                                         {t('activeField')}
                                     </div>
-                                    <div className="text-sm font-medium text-white/80 truncate max-w-[180px]">
+                                    <div className="text-sm font-medium text-white/95 truncate max-w-[180px]">
                                         {activeField?.label || 'Field'}
                                     </div>
                                 </div>
@@ -305,8 +337,8 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                     <GlassPanel className="rounded-3xl px-4 py-4 mb-4">
                         <div className="flex flex-col gap-3">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <label className="flex flex-col gap-2 rounded-2xl bg-white/5 border border-white/10 px-3 py-3">
-                                    <span className="text-[11px] uppercase tracking-[0.2em] text-white/50">{t('fieldLabel')}</span>
+                                <label className="flex flex-col gap-2 rounded-2xl bg-white/10 border border-white/40 px-3 py-3">
+                                    <span className="text-[11px] uppercase tracking-[0.2em] text-white/85">{t('fieldLabel')}</span>
                                     <div className="flex items-start gap-2 text-white/80">
                                         <Ruler className="w-4 h-4 text-[#f4d03f] mt-1" />
                                         <input
@@ -318,14 +350,14 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                     </div>
                                 </label>
 
-                                <div className="flex items-center rounded-2xl bg-white/5 border border-white/10 px-3 py-3">
-                                    <div className="text-sm text-white/70 truncate">
+                                <div className="flex items-center rounded-2xl bg-white/10 border border-white/40 px-3 py-3">
+                                    <div className="text-sm text-white/85 truncate">
                                         {activeProfile.location ? `${t('farmerProfileLocation')}: ${activeProfile.location}` : t('farmerProfileLocation')}
                                     </div>
                                 </div>
 
-                                <div className="flex items-center rounded-2xl bg-white/5 border border-white/10 px-3 py-3">
-                                    <div className="text-sm text-white/70 truncate">
+                                <div className="flex items-center rounded-2xl bg-white/10 border border-white/40 px-3 py-3">
+                                    <div className="text-sm text-white/85 truncate">
                                         {activeProfile.fieldSize ? `${t('farmerProfileFieldSize')}: ${activeProfile.fieldSize}` : t('farmerProfileFieldSize')}
                                     </div>
                                 </div>
@@ -346,9 +378,9 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                                 return (
                                                     <label
                                                         key={field.key}
-                                                        className="flex flex-col gap-2 rounded-2xl bg-white/5 border border-white/10 px-3 py-3"
+                                                        className="flex flex-col gap-2 rounded-2xl bg-white/10 border border-white/40 px-3 py-3"
                                                     >
-                                                        <span className="text-[11px] uppercase tracking-[0.2em] text-white/50">
+                                                        <span className="text-[11px] uppercase tracking-[0.2em] text-white/85">
                                                             {field.label}
                                                         </span>
                                                         <div className="flex items-start gap-2 text-white/80">
@@ -374,7 +406,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                                 );
                                             })}
                                         </div>
-                                        <p className="text-[11px] text-white/60 mt-2">{t('farmerProfileHelper')}</p>
+                                        <p className="text-[11px] text-white/85 mt-2">{t('farmerProfileHelper')}</p>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -387,7 +419,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                             onClick={() => setTab('chat')}
                             className={`px-4 py-2 rounded-2xl border transition-colors ${tab === 'chat'
                                 ? 'bg-[#f4d03f] border-[#f4d03f] text-[#28282B]'
-                                : 'bg-white/[0.08] border-white/20 text-[#fff5cf] hover:text-white'
+                                : 'bg-white/[0.12] border-white/35 text-white/90 hover:text-white'
                                 }`}
                         >
                             {t('chat')}
@@ -396,7 +428,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                             onClick={() => setTab('fields')}
                             className={`px-4 py-2 rounded-2xl border transition-colors ${tab === 'fields'
                                 ? 'bg-[#f4d03f] border-[#f4d03f] text-[#28282B]'
-                                : 'bg-white/[0.08] border-white/20 text-[#fff5cf] hover:text-white'
+                                : 'bg-white/[0.12] border-white/35 text-white/90 hover:text-white'
                                 }`}
                         >
                             {t('myFields')}
@@ -406,6 +438,13 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                     {/* Tab content */}
                     {tab === 'chat' ? (
                         <div className="relative">
+                            {fieldSetupPrompt && (
+                                <div className="max-w-3xl mx-auto w-full px-2 mb-3">
+                                    <div className="rounded-2xl border border-amber-300/30 bg-amber-200/10 px-4 py-2 text-sm text-amber-100">
+                                        {fieldSetupPrompt}
+                                    </div>
+                                </div>
+                            )}
                             <div className="max-w-3xl mx-auto w-full px-2 space-y-2">
                                 <AnimatePresence initial={false}>
                                     {messages.map(message => (
@@ -427,7 +466,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                         value={newFieldLabel}
                                         onChange={(e) => setNewFieldLabel(e.target.value)}
                                         placeholder={t('fieldLabelPlaceholder')}
-                                        className="flex-1 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white/80 placeholder-white/40 focus:outline-none"
+                                        className="flex-1 rounded-2xl bg-white/10 border border-white/40 px-4 py-3 text-sm text-white/90 placeholder-white/70 focus:outline-none"
                                     />
                                     <motion.button
                                         onClick={handleAddField}
@@ -440,7 +479,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                 </div>
 
                                 {fields.length === 0 ? (
-                                    <p className="text-sm text-white/60">{t('noFieldsYet')}</p>
+                                    <p className="text-sm text-white/85">{t('noFieldsYet')}</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {fields.map(f => {
@@ -450,12 +489,12 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                                     key={f.id}
                                                     className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 ${isActive
                                                         ? 'bg-white/10 border-[#f4d03f]/30'
-                                                        : 'bg-white/5 border-white/10'
+                                                        : 'bg-white/10 border-white/30'
                                                         }`}
                                                 >
                                                     <div className="min-w-0">
-                                                        <div className="text-sm font-medium text-white/85 truncate">{f.label || 'Field'}</div>
-                                                        <div className="text-xs text-white/45 truncate">
+                                                        <div className="text-sm font-medium text-white/95 truncate">{f.label || 'Field'}</div>
+                                                        <div className="text-xs text-white/80 truncate">
                                                             {[f.profile.location, f.profile.fieldSize, f.profile.crops].filter(Boolean).join(' • ') || t('farmerProfileHelper')}
                                                         </div>
                                                     </div>
@@ -467,7 +506,7 @@ const ForYouPage: React.FC<ForYouPageProps> = ({ onPageChange: _onPageChange }) 
                                                             whileTap={{ scale: 0.95 }}
                                                             className={`p-2 rounded-xl border transition-colors ${isActive
                                                                 ? 'border-[#f4d03f]/40 text-[#f4d03f] bg-[#f4d03f]/10'
-                                                                : 'border-white/10 text-white/60 hover:text-white hover:bg-white/10'
+                                                                : 'border-white/30 text-white/90 hover:text-white hover:bg-white/15'
                                                                 }`}
                                                             title={t('activeField')}
                                                         >

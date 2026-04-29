@@ -144,7 +144,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"output\": \"{{ $json.output }}\"\n}",
+        "responseBody": "={{ JSON.stringify({ output: $json.output }) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -185,7 +185,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"output\": \"{{ $json.choices[0].message.content }}\"\n}\n",
+        "responseBody": "={{ JSON.stringify({ output: $json.choices[0].message.content }) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -289,7 +289,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"assistant_reply\": \"{{ $json.output }}\",\n  \"type\": \"audio_processing_complete\"\n}",
+        "responseBody": "={{ JSON.stringify({ assistant_reply: $json.output, type: 'audio_processing_complete' }) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",

@@ -339,7 +339,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ onPageChange: _onPageChange }) => {
                                                         <div className="w-10 h-10 rounded-full bg-[#7a9a5a]/30 flex items-center justify-center">
                                                             <Sprout className="w-5 h-5 text-[#9aba7a]" />
                                                         </div>
-                                                        <div className="glass rounded-2xl rounded-tl-sm px-5 py-4">
+                                                        <div className="bg-white/25 border border-white/30 rounded-2xl rounded-tl-sm px-5 py-4 backdrop-blur-3xl">
                                                             <div className="flex gap-1.5">
                                                                 <motion.span
                                                                     animate={{ opacity: [0.3, 1, 0.3] }}

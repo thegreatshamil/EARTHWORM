@@ -63,7 +63,7 @@ const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
               flex items-center gap-3
             "
             >
-              <span>{t('varunAI')}</span>
+              <span>{t('letsChat')}</span>
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 
               {/* Shimmer effect */}

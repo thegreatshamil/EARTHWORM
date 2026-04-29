@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import Navbar from '@/components/navbar/Navbar';
 import SunflowerField from '@/components/sunflower/SunflowerField';
+import SkyBackground from '@/components/sky/SkyBackground';
 import HomePage from '@/pages/HomePage';
 import ChatPage from '@/pages/ChatPage';
 import AccountPage from '@/pages/AccountPage';
@@ -92,7 +93,11 @@ function AppContent() {
   if (!isAuthenticated) {
     return (
       <div className="h-screen overflow-hidden flex flex-col">
-        <div className="fixed inset-0 w-screen h-screen -z-10 overflow-hidden">
+        {/* Sky + Sun + Clouds */}
+        <SkyBackground />
+        
+        {/* Decorative Sunflower Layer */}
+        <div className="fixed inset-0 w-screen h-screen z-0 overflow-visible pointer-events-none">
           <SunflowerField />
         </div>
 
@@ -116,7 +121,11 @@ function AppContent() {
   // Show normal app with navbar
   return (
     <div className="h-screen overflow-hidden flex flex-col text-foreground">
-      <div className="fixed inset-0 w-screen h-screen -z-10 overflow-hidden">
+      {/* Sky + Sun + Clouds */}
+      <SkyBackground />
+      
+      {/* Decorative Sunflower Layer */}
+      <div className="fixed inset-0 w-screen h-screen z-0 overflow-visible pointer-events-none">
         <SunflowerField />
       </div>
 

@@ -80,7 +80,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             inline-block px-4 py-2.5 rounded-2xl text-left
             ${isUser
               ? 'bg-[#f4d03f] text-[#2d1a0a] rounded-tr-sm'
-              : 'glass text-white rounded-tl-sm'
+              : 'bg-white/25 border border-white/30 text-white rounded-tl-sm backdrop-blur-3xl'
             }
           `}
         >
@@ -90,7 +90,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         </div>
 
         {/* Timestamp */}
-        <p className="mt-1.5 text-xs text-white/30">
+        <p className="mt-1.5 text-xs text-white/80">
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>

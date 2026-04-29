@@ -20,7 +20,7 @@ import uvicorn
 import logging
 
 from config import settings
-from models import ChatRequest, ChatResponse, HealthResponse, ErrorResponse
+from models import ChatRequest, ChatResponse, HealthResponse, ErrorResponse, ForYouRequest
 from services import N8NBridge, AIProviderType, AIProviderFactory
 
 # Configure logging
@@ -174,6 +174,79 @@ async def chat(request: ChatRequest):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"An error occurred: {error_message}",
             )
+
+
+@app.post("/for-you", response_model=ChatResponse)
+async def for_you(request: ForYouRequest):
+    """
+    Personalized advisory endpoint that injects field context before forwarding to n8n.
+    """
+    try:
+        logger.info(f"For You request received - Session: {request.session_id}, Lang: {request.language}")
+
+        language_names = {
+            "en": "English",
+            "hi": "Hindi",
+            "ta": "Tamil",
+            "te": "Telugu",
+            "kn": "Kannada",
+            "ml": "Malayalam",
+            "bn": "Bengali",
+            "mr": "Marathi",
+            "gu": "Gujarati",
+            "pa": "Punjabi",
+        }
+        language_name = language_names.get(request.language, "English")
+
+        profile = request.field_profile
+        crops_text = ", ".join(profile.crops) if profile.crops else "Not specified"
+        soil_text = profile.soil_type if profile.soil_type else "Not specified"
+        irrigation_text = profile.irrigation if profile.irrigation else "Not specified"
+
+        enriched_prompt = (
+            "You are Varun, a sharp agricultural advisor. Answer like a knowledgeable friend - direct, practical, no fluff.\n\n"
+            "Context (do NOT repeat or restate this in your answer):\n"
+            f"- Location: {profile.location}\n"
+            f"- Field size: {profile.size_acres} acres\n"
+            f"- Crops: {crops_text}\n"
+            f"- Soil: {soil_text}\n"
+            f"- Irrigation: {irrigation_text}\n\n"
+            f"Farmer's question: {request.text}\n\n"
+            "Give a short, specific answer (3-5 sentences max unless detail is truly needed). "
+            "No preamble, no restating the field info, no filler. Lead with the answer. "
+            f"Respond ONLY in {language_name}."
+        )
+
+        provider = AIProviderFactory.get_provider(AIProviderType.N8N)
+        response_text = await provider.chat(
+            text=enriched_prompt,
+            image_base64=None,
+            audio_file=None,
+            session_id=request.session_id,
+            language=request.language,
+        )
+
+        return ChatResponse(
+            response=response_text,
+            session_id=request.session_id,
+        )
+    except Exception as e:
+        logger.error(f"For You error: {type(e).__name__}: {e}", exc_info=True)
+        error_message = str(e)
+        if "n8n" in error_message.lower() or "webhook" in error_message.lower():
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"AI service is temporarily unavailable: {error_message}",
+            )
+        if "timeout" in error_message.lower():
+            raise HTTPException(
+                status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+                detail="The AI service took too long to respond. Please try again.",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred: {error_message}",
+        )
 
 
 # Test endpoint for development
